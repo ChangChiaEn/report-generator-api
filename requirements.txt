@@ -5,6 +5,8 @@ numpy==1.26.0
 matplotlib==3.8.0
 python-docx==1.1.0
 anthropic==0.7.0
+httpx==0.27.0  # 明確指定兼容的 httpx 版本
 werkzeug==3.0.0
 gunicorn==21.2.0
 openpyxl==3.1.2
+requests==2.31.0
