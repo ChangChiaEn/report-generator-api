@@ -17,7 +17,11 @@ import tempfile
 from anthropic import Anthropic
 
 app = Flask(__name__)
-CORS(app)  # 啟用跨域請求
+CORS(app, resources={r"/*": {"origins": [
+    "https://reportgenerator.pages.dev",
+    "http://localhost:*",
+    "http://127.0.0.1:*"
+]}})
 
 # 創建臨時文件夾用於存儲上傳的文件
 UPLOAD_FOLDER = tempfile.mkdtemp()
