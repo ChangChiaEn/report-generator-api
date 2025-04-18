@@ -786,21 +786,28 @@ def analyze():
             )
 
         # 讀取並分析數據
+        print("正在讀取數據文件...")
         airflow_data = read_airflow_files()
+        print("正在處理 CV 數據...")
         cv_data = read_cv_files()
+        print("正在處理統計摘要...")
         summary_stats_df = read_summary_stats()
+        print("正在處理測試數據...")
         testdata_data = read_testdata_file()
         concentration_data = testdata_data or {}
 
         # 分析圖片相關性
+        print("正在分析圖片相關性...")
         image_positions = None
         if image_files:
             image_positions = determine_image_positions(image_files, experiment_info, user_prompt)
 
         # 使用 Claude API 生成報告
+        print("正在使用 Claude API 生成報告...")
         claude_report = analyze_with_claude(concentration_data, experiment_info, user_prompt, airflow_data, cv_data, summary_stats_df)
 
         # 生成 DOCX 報告
+        print("正在生成 DOCX 報告...")
         report_path = generate_docx_report(claude_report, experiment_info, airflow_data, cv_data, testdata_data, image_positions)
 
         if not report_path:
@@ -836,9 +843,16 @@ def analyze():
         return jsonify(result), 200
 
     except Exception as e:
+        import traceback
+        error_traceback = traceback.format_exc()
         print(f"分析過程中發生錯誤: {e}")
-        return jsonify({"error": f"Processing error: {str(e)}"}), 500
-
+        print(error_traceback)
+        return jsonify({
+            "error": f"處理錯誤", 
+            "message": str(e),
+            "trace": error_traceback if os.getenv("DEBUG") == "true" else None
+        }), 500
+        
 # 下載報告的接口
 @app.route('/download/<filename>', methods=['GET'])
 def download_report(filename):
